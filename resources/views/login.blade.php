@@ -111,8 +111,8 @@
             <label for="remember">Remember me</label>
         </div>
         <button class="login-btn" onclick="login()">Login</button>
-        <div class="or-text">or</div>
-        <button class="signup-btn">Sign Up</button>
+        {{-- <div class="or-text">or</div> --}}
+        {{-- <button class="signup-btn">Sign Up</button> --}}
         <div id="error-message" class="error-message" style="display: none;">Invalid username or password.</div>
     </div>
 
@@ -126,10 +126,10 @@
             const enteredPassword = passwordInput.value;
 
             if (enteredName === "FahrizSeptian" && enteredPassword === "123456") {
-                // Redirect to the home page (replace '/home' with your actual home page URL)
+
                 window.location.href = '/home';
             } else {
-                // Display the error message
+
                 errorMessageDiv.style.display = 'block';
             }
         }

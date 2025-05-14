@@ -5,6 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Netes.io Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -16,9 +17,9 @@
       font-family: Arial, sans-serif;
       background-color: #ffffff;
       display: flex;
-      flex-direction: row; /* Pastikan sidebar di kiri */
+      flex-direction: row;
       height: 100vh;
-      overflow: hidden; /* Menghilangkan scrollbar */
+      overflow: hidden;
     }
 
     .sidebar {
@@ -45,6 +46,7 @@
       cursor: pointer;
       border-radius: 8px;
       width: 60px;
+      height: 60px;
       text-align: center;
     }
 
@@ -85,10 +87,37 @@
       color: #000;
     }
 
+    .header-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 50%;
+      transition: background 0.2s ease;
+    }
+
+    .icon-button:hover {
+      background-color: rgba(66, 170, 127, 0.1);
+    }
+
     .notification {
       width: 24px;
       height: 24px;
     }
+
+    .profile {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
 
     .main-content {
       display: flex;
@@ -155,13 +184,20 @@
     }
 
     .buttons button {
-      background: linear-gradient(90deg, #42aa7f, #7cc6b4);
+      background: linear-gradient(to right, #3ba57d, #4aa3d1);
       color: white;
       border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 12px;
+      padding: 12px 25px;
+      border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .buttons button:hover {
+      background: linear-gradient(to right, #2e8b57, #418ad1);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
     }
 
     .chart-container {
@@ -187,11 +223,10 @@
       height: auto;
     }
 
-    /* RESPONSIVE LAYOUT */
     @media (max-width: 768px) {
       body {
         flex-direction: column;
-        overflow: auto; /* Agar konten bisa di-scroll di tampilan mobile */
+        overflow: auto;
       }
 
       .sidebar {
@@ -221,14 +256,18 @@
 <body>
   <div class="sidebar">
     <button class="nav-button">
+      <img src="Vector.png" alt="Home" class="nav-icon" id="home" />
+      <div>Home</div>
+    </button>
+    <button class="nav-button" onclick="location.href='kelembabansuhu'">
       <img src="temperature.png" alt="Suhu" class="nav-icon" />
       <div>Suhu</div>
     </button>
-    <button class="nav-button">
+    <button class="nav-button" onclick="location.href='jadwalrotasi'">
       <img src="rotation.png" alt="Rotasi Rak" class="nav-icon" />
       <div>Rotasi</div>
     </button>
-    <button class="nav-button">
+    <button class="nav-button" onclick="location.href='sensor'">
       <img src="symbolsmonitor.png" alt="Sensor" class="nav-icon" />
       <div>Sensor</div>
     </button>
@@ -240,7 +279,14 @@
         <div class="greeting">Good morning,</div>
         <div class="name">Fahriz Septian</div>
       </div>
-      <img src="notification.png" alt="Notification" class="notification" />
+      <div class="header-buttons">
+        <button class="icon-button" onclick="window.location.href='notifikasi'">
+          <img src="notification.png" alt="Notification" class="notification" />
+        </button>
+        <button class="icon-button" onclick="window.location.href='profile'">
+          <img src="Layer 2.png" alt="Profile" class="profile" />
+        </button>
+      </div>
     </div>
 
     <div class="main-content">
@@ -260,23 +306,72 @@
       </div>
 
       <div class="buttons">
-        <button>Atur Jadwal Rotasi</button>
-        <button>Ubah Pengaturan</button>
-        <button>Pilih Jenis Kelamin</button>
+        <button onclick="window.location.href='durasingkubasi'">Durasi Ingkubasi</button>
+        <button onclick="window.location.href='pilihkelamin'">Pilih Jenis Kelamin</button>
       </div>
 
       <div class="chart-container">
         <div class="chart">
           <h4>Grafik Suhu</h4>
-          <img src="temperature-graph.png" alt="Grafik Suhu">
+          <canvas id="suhuChart"></canvas>
         </div>
         <div class="chart">
           <h4>Grafik Kelembaban</h4>
-          <img src="humidity-graph.png" alt="Grafik Kelembaban">
+          <canvas id="kelembabanChart"></canvas>
         </div>
       </div>
     </div>
   </div>
+
+  <script>
+    const waktu = ["08:00", "09:00", "10:00", "11:00", "12:00"];
+    const suhuData = [36.8, 37.1, 37.5, 37.3, 37.4];
+    const kelembabanData = [58, 60, 61, 59, 60];
+
+    const ctxSuhu = document.getElementById("suhuChart").getContext("2d");
+    new Chart(ctxSuhu, {
+      type: "line",
+      data: {
+        labels: waktu,
+        datasets: [{
+          label: "Suhu (°C)",
+          data: suhuData,
+          borderColor: "#42aa7f",
+          backgroundColor: "rgba(66, 170, 127, 0.2)",
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: false }
+        }
+      }
+    });
+
+    const ctxKelembaban = document.getElementById("kelembabanChart").getContext("2d");
+    new Chart(ctxKelembaban, {
+      type: "line",
+      data: {
+        labels: waktu,
+        datasets: [{
+          label: "Kelembaban (%)",
+          data: kelembabanData,
+          borderColor: "#7cc6b4",
+          backgroundColor: "rgba(124, 198, 180, 0.2)",
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: false }
+        }
+      }
+    });
+  </script>
 </body>
 
 </html>
