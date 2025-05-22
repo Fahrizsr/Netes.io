@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Monitoring Sensor</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <style>
+    
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
@@ -24,6 +26,10 @@
             align-items: center;
             padding: 20px 0;
             border-right: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
         }
 
         .nav-button {
@@ -60,6 +66,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-left: 90px;
         }
 
         h2 {
@@ -162,12 +169,11 @@
         </div>
 
         <div class="status-connection">
-            <p>Status Koneksi ESP32: <span class="status" id="statusESP">Memuat...</span></p>
+            <p>Status Koneksi ESP32: <span class="status" id="statusESP">Menghubungkan...</span></p>
         </div>
 
         <h4>Log Data</h4>
-        <div class="log-list" id="logList">
-        </div>
+        <div class="log-list" id="logList"></div>
     </div>
 
     <script>
@@ -208,48 +214,68 @@
             options: { responsive: true }
         });
 
-        function updateSensorData() {
-            const now = new Date();
-            const waktu = now.toLocaleTimeString('id-ID');
-            const suhu = Math.random() * 10 + 30; 
-            const kelembaban = Math.random() * 30 + 50; 
+        // === MQTT SETUP ===
+        const client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt'); // Ganti dengan broker jika lokal
 
-            if (suhuChart.data.labels.length >= 10) {
-                suhuChart.data.labels.shift();
-                suhuChart.data.datasets[0].data.shift();
-                kelembabanChart.data.labels.shift();
-                kelembabanChart.data.datasets[0].data.shift();
+        client.on('connect', () => {
+            console.log('Terhubung ke MQTT broker');
+            statusSpan.innerText = "Terhubung";
+            statusSpan.style.backgroundColor = "#3ba57d";
+            client.subscribe('sensor/suhu');
+            client.subscribe('sensor/kelembaban');
+        });
+
+        client.on('error', (err) => {
+            console.error('MQTT error:', err);
+            statusSpan.innerText = "Terputus";
+            statusSpan.style.backgroundColor = "red";
+        });
+
+        client.on('message', (topic, message) => {
+            const waktu = new Date().toLocaleTimeString('id-ID');
+            const nilai = parseFloat(message.toString());
+
+            if (topic === 'sensor/suhu') {
+                if (suhuChart.data.labels.length >= 10) {
+                    suhuChart.data.labels.shift();
+                    suhuChart.data.datasets[0].data.shift();
+                }
+                suhuChart.data.labels.push(waktu);
+                suhuChart.data.datasets[0].data.push(nilai.toFixed(2));
+                suhuChart.update();
             }
 
-            suhuChart.data.labels.push(waktu);
-            suhuChart.data.datasets[0].data.push(suhu.toFixed(2));
-            kelembabanChart.data.labels.push(waktu);
-            kelembabanChart.data.datasets[0].data.push(kelembaban.toFixed(2));
-
-            suhuChart.update();
-            kelembabanChart.update();
+            if (topic === 'sensor/kelembaban') {
+                if (kelembabanChart.data.labels.length >= 10) {
+                    kelembabanChart.data.labels.shift();
+                    kelembabanChart.data.datasets[0].data.shift();
+                }
+                kelembabanChart.data.labels.push(waktu);
+                kelembabanChart.data.datasets[0].data.push(nilai.toFixed(2));
+                kelembabanChart.update();
+            }
 
             const logItem = document.createElement('div');
             logItem.className = 'log-item';
             logItem.innerHTML = `
-                <span>${now.toLocaleString('id-ID')}</span>
-                <span class="${suhu > 38 ? 'temp-high' : ''}">Temp: ${suhu.toFixed(1)} °C</span>
-                <span>Humidity: ${kelembaban.toFixed(1)}%</span>
+                <span>${new Date().toLocaleString('id-ID')}</span>
+                <span class="${nilai > 38 && topic === 'sensor/suhu' ? 'temp-high' : ''}">
+                    ${topic === 'sensor/suhu' ? 'Temp' : 'Humidity'}: ${nilai.toFixed(1)} ${topic === 'sensor/suhu' ? '°C' : '%'}
+                </span>
             `;
             logList.prepend(logItem);
             if (logList.children.length > 10) {
                 logList.removeChild(logList.lastChild);
             }
-        }
+        });
 
-        function updateESPStatus() {
-            const isConnected = Math.random() > 0.1; 
-            statusSpan.innerText = isConnected ? "Terhubung" : "Terputus";
-            statusSpan.style.backgroundColor = isConnected ? "#3ba57d" : "red";
-        }
-
-        setInterval(updateSensorData, 5000); 
-        setInterval(updateESPStatus, 3000);  
+        // OPTIONAL: Simulasi dummy jika ESP belum aktif
+        /*
+        setInterval(() => {
+            client.emit('message', 'sensor/suhu', (Math.random() * 10 + 30).toFixed(2));
+            client.emit('message', 'sensor/kelembaban', (Math.random() * 30 + 50).toFixed(2));
+        }, 5000);
+        */
     </script>
 </body>
 </html>

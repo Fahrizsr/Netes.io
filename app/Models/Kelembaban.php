@@ -13,6 +13,10 @@ class Kelembaban extends Model
 
     protected $fillable = ['kelembaban', 'waktu_perekaman', 'id_riwayat'];
 
+    protected $casts = [
+        'waktu_perekaman' => 'datetime',
+    ];
+
     public function riwayatInkubasi()
     {
         return $this->belongsTo(RiwayatInkubasi::class, 'id_riwayat');

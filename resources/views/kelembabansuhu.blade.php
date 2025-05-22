@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Netes.io - Suhu & Kelembaban</title>
+  <title>Suhu & Kelembaban</title>
   <style>
     * {
       box-sizing: border-box;
@@ -49,8 +49,9 @@
       text-align: center;
     }
 
-    .nav-button:hover {
-      background-color: rgba(66, 170, 127, 0.2);
+    .nav-button:hover,
+    .nav-button.active {
+      background-color: rgba(59, 165, 125, 0.2);
     }
 
     .nav-icon {
@@ -61,35 +62,26 @@
 
     .container {
       flex-grow: 1;
-      padding: 20px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-      padding-bottom: 40px;
-    }
-
-    .header {
-      background-color: #fff;
-      padding: 15px 20px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      border-radius: 10px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 600;
-      color: #2d3748;
+      gap: 30px;
+      padding-bottom: 60px;
+      max-width: 600px; 
+      margin: 0 auto;
     }
 
     .current-condition {
       display: flex;
-      gap: 15px;
+      gap: 30px;
       width: 100%;
-      max-width: 400px;
+      max-width: 600px;
       margin: 0 auto;
     }
 
     .condition-card {
       background-color: #fff;
-      padding: 15px;
+      padding: 25px;
       border-radius: 10px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       flex: 1;
@@ -97,18 +89,18 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 15px;
     }
 
     .condition-icon {
-      width: 30px;
-      height: 30px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       color: #fff;
-      font-size: 20px;
+      font-size: 30px;
     }
 
     .thermometer-icon {
@@ -120,13 +112,13 @@
     }
 
     .condition-label {
-      font-size: 14px;
+      font-size: 18px;
       color: #718096;
       text-align: center;
     }
 
     .condition-value {
-      font-size: 24px;
+      font-size: 36px;
       font-weight: bold;
       color: #2d3748;
       transition: transform 0.3s ease-in-out, color 0.3s ease-in-out;
@@ -139,13 +131,13 @@
 
     .settings {
       background-color: #fff;
-      padding: 20px;
+      padding: 30px;
       border-radius: 10px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       display: flex;
       flex-direction: column;
-      gap: 15px;
-      max-width: 400px;
+      gap: 25px;
+      max-width: 600px;
       margin: 0 auto;
     }
 
@@ -153,11 +145,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 20px;
     }
 
     .setting-label {
-      font-size: 16px;
+      font-size: 20px;
       color: #2d3748;
+      min-width: 150px;
     }
 
     .slider-container {
@@ -172,29 +166,31 @@
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
-      height: 8px;
+      height: 12px;
       background: #d1d8e0;
       border-radius: 5px;
       outline: none;
       -webkit-transition: .2s;
       transition: opacity .2s;
+      cursor: pointer;
     }
 
     .slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 20px;
-      height: 20px;
+      width: 28px;
+      height: 28px;
       background: #48bb78;
       cursor: pointer;
       border-radius: 50%;
       border: 2px solid #fff;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      margin-top: -9px;
     }
 
     .slider::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
+      width: 28px;
+      height: 28px;
       background: #48bb78;
       cursor: pointer;
       border-radius: 50%;
@@ -203,9 +199,9 @@
     }
 
     .setting-value {
-      font-size: 14px;
+      font-size: 18px;
       color: #718096;
-      min-width: 60px;
+      min-width: 70px;
       text-align: right;
       font-family: monospace;
       transition: all 0.2s ease-in-out;
@@ -215,13 +211,13 @@
       background: linear-gradient(to right, #3ba57d, #4aa3d1);
       color: #fff;
       border: none;
-      padding: 12px 20px;
+      padding: 16px 0;
       border-radius: 10px;
-      font-size: 16px;
+      font-size: 20px;
       font-weight: bold;
       cursor: pointer;
       width: 100%;
-      max-width: 400px;
+      max-width: 600px;
       margin: 20px auto 0;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
@@ -237,119 +233,89 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
       transform: translateY(1px);
     }
-
   </style>
 </head>
 
 <body>
   <div class="sidebar">
-    <button class="nav-button" onclick="location.href='home'">
+    <button class="nav-button" type="button" onclick="location.href='home'">
       <img src="Vector.png" alt="Home" class="nav-icon" />
       <div>Home</div>
     </button>
-    <button class="nav-button">
+    <button class="nav-button active" type="button" onclick="location.href='kelembabansuhu'">
       <img src="temperature.png" alt="Suhu" class="nav-icon" />
       <div>Suhu</div>
     </button>
-    <button class="nav-button" onclick="location.href='jadwalrotasi'">
+    <button class="nav-button" type="button" onclick="location.href='jadwalrotasi'">
       <img src="rotation.png" alt="Rotasi Rak" class="nav-icon" />
       <div>Rotasi</div>
     </button>
-    <button class="nav-button" onclick="location.href='sensor'">
+    <button class="nav-button" type="button" onclick="location.href='sensor'">
       <img src="symbolsmonitor.png" alt="Sensor" class="nav-icon" />
       <div>Sensor</div>
     </button>
   </div>
 
   <div class="container">
+    <!-- Hapus header -->
+
     <div class="current-condition">
       <div class="condition-card">
-        <div class="condition-icon thermometer-icon">
-          🌡️
-        </div>
+        <div class="condition-icon thermometer-icon">🌡️</div>
         <div class="condition-label">Suhu saat ini</div>
-        <div class="condition-value" id="currentSuhu">37.5</div>
+        <div class="condition-value" id="currentSuhu">{{ $latest->suhu ?? '0' }}</div>
         <div class="condition-unit">°C</div>
       </div>
       <div class="condition-card">
-        <div class="condition-icon humidity-icon">
-          💧
-        </div>
+        <div class="condition-icon humidity-icon">💧</div>
         <div class="condition-label">Kelembaban saat ini</div>
-        <div class="condition-value" id="currentKelembaban">60</div>
+        <div class="condition-value" id="currentKelembaban">{{ $latest->kelembaban ?? '0' }}</div>
         <div class="condition-unit">%</div>
       </div>
     </div>
 
-    <div class="settings">
-      <div class="setting-row">
-        <label for="suhu" class="setting-label">Suhu</label>
-        <div class="slider-container">
-          <input type="range" id="suhu" class="slider" min="0" max="50" value="37.5" />
-          <div class="setting-value" id="suhuValue">37.5°C</div>
+    <form method="POST" action="{{ route('kelembaban-suhu.store') }}">
+      @csrf
+      <div class="settings">
+        <div class="setting-row">
+          <label for="suhu" class="setting-label">Suhu (°C)</label>
+          <div class="slider-container">
+            <input
+              id="suhu"
+              type="range"
+              name="suhu"
+              class="slider"
+              min="0"
+              max="50"
+              step="0.5"
+              value="{{ old('suhu', $latest->suhu ?? 0) }}"
+              oninput="document.getElementById('suhuValue').textContent = this.value"
+            />
+          </div>
+          <div id="suhuValue" class="setting-value">{{ old('suhu', $latest->suhu ?? 0) }}</div>
         </div>
-      </div>
-      <div class="setting-row">
-        <label for="kelembaban" class="setting-label">Kelembaban</label>
-        <div class="slider-container">
-          <input type="range" id="kelembaban" class="slider" min="0" max="100" value="60" />
-          <div class="setting-value" id="kelembabanValue">60%</div>
+        <div class="setting-row">
+          <label for="kelembaban" class="setting-label">Kelembaban (%)</label>
+          <div class="slider-container">
+            <input
+              id="kelembaban"
+              type="range"
+              name="kelembaban"
+              class="slider"
+              min="0"
+              max="100"
+              step="1"
+              value="{{ old('kelembaban', $latest->kelembaban ?? 0) }}"
+              oninput="document.getElementById('kelembabanValue').textContent = this.value"
+            />
+          </div>
+          <div id="kelembabanValue" class="setting-value">{{ old('kelembaban', $latest->kelembaban ?? 0) }}</div>
         </div>
-      </div>
 
-      <button class="save-button">Simpan Pengaturan</button>
-    </div>
+        <button type="submit" class="save-button">Simpan</button>
+      </div>
+    </form>
   </div>
-
-  <script>
-    
-    const suhuSlider = document.getElementById('suhu');
-    const kelembabanSlider = document.getElementById('kelembaban');
-    const suhuValue = document.getElementById('suhuValue');
-    const kelembabanValue = document.getElementById('kelembabanValue');
-    const currentSuhu = document.getElementById('currentSuhu');
-    const currentKelembaban = document.getElementById('currentKelembaban');
-    const saveButton = document.querySelector('.save-button');
-
-    suhuSlider.addEventListener('input', function () {
-      suhuValue.textContent = `${suhuSlider.value}°C`;
-      updateConditionValue(currentSuhu, suhuSlider.value);
-    });
-
-    kelembabanSlider.addEventListener('input', function () {
-      kelembabanValue.textContent = `${kelembabanSlider.value}%`;
-      updateConditionValue(currentKelembaban, kelembabanSlider.value);
-    });
-
-    saveButton.addEventListener('click', function () {
-      localStorage.setItem('suhu', suhuSlider.value);
-      localStorage.setItem('kelembaban', kelembabanSlider.value);
-      alert('Pengaturan berhasil disimpan!');
-    });
-
-    window.addEventListener('load', function () {
-      const storedSuhu = localStorage.getItem('suhu');
-      const storedKelembaban = localStorage.getItem('kelembaban');
-      if (storedSuhu) {
-        suhuSlider.value = storedSuhu;
-        suhuValue.textContent = `${storedSuhu}°C`;
-        currentSuhu.textContent = storedSuhu;
-      }
-      if (storedKelembaban) {
-        kelembabanSlider.value = storedKelembaban;
-        kelembabanValue.textContent = `${storedKelembaban}%`;
-        currentKelembaban.textContent = storedKelembaban;
-      }
-    });
-
-    function updateConditionValue(element, newValue) {
-      element.classList.add('changed');
-      element.textContent = newValue;
-      setTimeout(() => {
-        element.classList.remove('changed');
-      }, 300);
-    }
-  </script>
 </body>
 
 </html>

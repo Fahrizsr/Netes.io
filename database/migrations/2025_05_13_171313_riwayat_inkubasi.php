@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('riwayat_inkubasi', function (Blueprint $table) {
             $table->id('id_riwayat');
             $table->unsignedBigInteger('id_durasi');
-            $table->foreign('id_durasi')->references('id_durasi')->on('durasi_inkubasi')->onDelete('cascade');
+            $table->foreign('id_durasi')->references('id_durasi')->on('durasi_inkubasi');
             $table->timestamps();
         });
     }

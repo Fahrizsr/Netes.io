@@ -1,72 +1,57 @@
-<?php
+    <?php
+    use Illuminate\Support\Facades\Auth;
 
-use App\Http\Controllers\KelembabanController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DurasiInkubasiController;
+   
+    use App\Http\Controllers\DurasiInkubasiController;
+    use App\Http\Controllers\LoginController;
+    use App\Http\Controllers\NotifikasiController;
+    use App\Http\Controllers\GantiPasswordController;
+    use App\Http\Controllers\RotasiTelurController;
+    use App\Http\Controllers\JeniskelaminController;
+    use App\Http\Controllers\KelembabanSuhuController;
+    use Illuminate\Support\Facades\Route as Route;
 
-Route::get('/', function () {
-    return view('welcome');
+    // Home & Static
+    Route::view('/', 'welcome');
+    Route::view('/login', 'login');
+    Route::view('/logout', 'welcome');
+    Route::view('/home', 'home');
+    Route::view('/sensor', 'sensor');
+    Route::view('/kelembabansuhu', 'kelembabansuhu');
+    Route::view('/pilihkelamin', 'pilihkelamin');
+    Route::view('/notifikasi', 'notifikasi');
+    Route::view('/profile', 'profile');
+    Route::view('/gantipassword', 'gantipassword');
+    // Route::view('/jadwalrotasi', 'jadwalrotasi');
+    
+    // Auth
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+    
+    // Ubah Rotasi
+    Route::get('/ubahrotasi', [RotasiTelurController::class, 'indexview'])->name('ubahrotasi.index');
 
-});
+    // Durasi Inkubasi
+    Route::get('/durasingkubasi', [DurasiInkubasiController::class, 'index'])->name('durasi.index');
+    Route::post('/update-incubation', [DurasiInkubasiController::class, 'update'])->name('durasi.update');
 
-Route::get('/login', function () {
-    return view('login');
+    // Kelembaban
+    Route::get('/kelembaban-suhu', [KelembabanSuhuController::class, 'index'])->name('kelembaban-suhu.index');
+    Route::post('/kelembaban-suhu', [KelembabanSuhuController::class, 'store'])->name('kelembaban-suhu.store');
 
-});
+    // Jadwal Rotasi
+    Route::get('/jadwalrotasi', [RotasiTelurController::class, 'index'])->name('jadwalrotasi.index');
+    Route::get('/jadwalrotasi/{rotasiTelur}', [RotasiTelurController::class, 'show']);
+    Route::post('/ubahrotasi', [RotasiTelurController::class, 'store'])->name('ubahrotasi.store');
 
-Route::get('/logout', function () {
-    return view('welcome');
+    // Pilih Jenis Kelamin
+    Route::post('/pilihkelamin', [JeniskelaminController::class, 'store'])->name('jeniskelamin.update');
 
-});
+    // Ganti Password
+    Route::get('/gantipassword', [GantiPasswordController::class, 'showChangePassword'])->name('password.show')->middleware('auth');
+    Route::post('/gantipassword', [GantiPasswordController::class, 'changePassword'])->name('password.change')->middleware('auth');
 
-Route::get('/home', function () {
-    return view('home');
+    // notifikasi
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('riwayat.index');
+    // Route::get('/notifikasi', [NotifikasiController::class, 'riwayat']);
 
-});
-
-Route::get('/kelembabansuhu', function () {
-    return view('kelembabansuhu');
-
-});
-
-Route::get('/jadwalrotasi', function () {
-    return view('jadwalrotasi');
-
-});
-
-Route::get('/ubahrotasi', function () {
-    return view('ubahrotasi');
-
-});
-
-Route::get('/sensor', function () {
-    return view('sensor');
-
-});
-
-Route::get('/pilihkelamin', function () {
-    return view('pilihkelamin');
-
-});
-
-Route::get('/notifikasi', function () {
-    return view('notifikasi');
-
-});
-
-Route::get('/profile', function () {
-    return view('profile');
-
-});
-
-// Route::get('/durasingkubasi', function () {
-//     return view('durasingkubasi');
-
-// });
-
-
-Route::get('/durasingkubasi', [DurasiInkubasiController::class, 'index'])->name('durasi.index');
-Route::post('/update-incubation', [DurasiInkubasiController::class, 'update'])->name('durasi.update');
-
-Route::get('/kelembaban', [KelembabanController::class, 'index'])->name('kelembaban.index');
-Route::post('/kelembaban', [KelembabanController::class, 'store'])->name('kelembaban.store');

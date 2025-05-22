@@ -16,7 +16,7 @@ return new class extends Migration
             $table->float('kelembaban');
             $table->timestamp('waktu_perekaman');
             $table->unsignedBigInteger('id_riwayat');
-            $table->foreign('id_riwayat')->references('id_riwayat')->on('riwayat_inkubasi')->onDelete('cascade');
+            $table->foreign('id_riwayat')->references('id_riwayat')->on('riwayat_inkubasi');
             $table->timestamps();
         });
     }

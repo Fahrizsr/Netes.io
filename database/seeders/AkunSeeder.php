@@ -2,16 +2,17 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Akun;
+use Illuminate\Support\Facades\Hash;
 
 class AkunSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
+    public function run()
     {
-        //
+        Akun::create([
+            'username' => 'admin',
+            'password' => Hash::make('123456'),
+        ]);
     }
 }

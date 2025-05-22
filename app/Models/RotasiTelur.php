@@ -11,10 +11,12 @@ class RotasiTelur extends Model
 
     protected $table = 'rotasi_telur';
 
-    protected $fillable = ['jumlah_rotasi', 'jam_rotasi', 'id_riwayat'];
+    protected $primaryKey = 'id_rotasi'; 
 
-    public function riwayatInkubasi()
-    {
-        return $this->belongsTo(RiwayatInkubasi::class, 'id_riwayat');
-    }
+    protected $fillable = ['jumlah_rotasi', 'jam_rotasi', 'tanggal_rotasi'];
+
+    // public function riwayatInkubasi()
+    // {
+    //     return $this->belongsTo(RiwayatInkubasi::class, 'id_riwayat');
+    // }
 }

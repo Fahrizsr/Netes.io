@@ -53,7 +53,7 @@ class SuhuController extends Controller
      */
     public function update(UpdateSuhuRequest $request, Suhu $suhu)
     {
-        //
+        
     }
 
     /**

@@ -13,6 +13,10 @@ class Suhu extends Model
 
     protected $fillable = ['suhu', 'waktu_perekaman', 'id_riwayat'];
 
+    protected $casts = [
+        'waktu_perekaman' => 'datetime',
+    ];
+
     public function riwayatInkubasi()
     {
         return $this->belongsTo(RiwayatInkubasi::class, 'id_riwayat');

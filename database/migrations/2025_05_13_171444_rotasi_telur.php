@@ -14,9 +14,10 @@ return new class extends Migration
         Schema::create('rotasi_telur', function (Blueprint $table) {
             $table->id('id_rotasi');
             $table->integer('jumlah_rotasi');
-            $table->time('jam_rotasi');
-            $table->unsignedBigInteger('id_riwayat');
-            $table->foreign('id_riwayat')->references('id_riwayat')->on('riwayat_inkubasi')->onDelete('cascade');
+            $table->integer('jam_rotasi');
+            $table->date('tanggal_rotasi');
+            // $table->unsignedBigInteger('id_riwayat');
+            // $table->foreign('id_riwayat')->references('id_riwayat')->on('riwayat_inkubasi')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -8,7 +8,7 @@
     <style>
         * {
             box-sizing: border-box;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -29,6 +29,10 @@
             align-items: center;
             padding: 20px 0;
             border-right: 1px solid #ddd;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
         }
 
         .nav-button {
@@ -47,10 +51,12 @@
             height: 60px;
             text-align: center;
             text-decoration: none;
+            transition: background-color 0.2s ease-in-out;
         }
 
-        .nav-button:hover {
-            background-color: rgba(66, 170, 127, 0.2);
+        .nav-button:hover,
+        .nav-button.active {
+            background-color: rgba(59, 165, 125, 0.2);
         }
 
         .nav-icon {
@@ -65,6 +71,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            margin-left: 90px;
         }
 
         h2 {
@@ -75,31 +82,41 @@
 
         table {
             width: 90%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-bottom: 30px;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            background-color: #ffffff;
+        }
+
+        th {
+            background-color: #2e8b57;
+            color: #ffffff;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            background-color: #f9f9f9;
+            color: #333333;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #f0f7f4;
+        }
+
+        tr:hover td {
+            background-color: #d3f2e2;
         }
 
         th,
         td {
-            padding: 12px;
+            padding: 14px 18px;
             text-align: center;
-        }
-
-        th {
-            background-color: #008040;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background-color: #3de48a;
-            color: #000;
-        }
-
-        tr:nth-child(odd) {
-            background-color: #5ff2a3;
-            color: #000;
+            border-bottom: 1px solid #e0e0e0;
         }
 
         .button {
@@ -125,10 +142,6 @@
             transform: translateY(1px);
         }
 
-        .nav-bottom {
-            display: none;
-        }
-
         @media (max-width: 768px) {
             body {
                 flex-direction: column;
@@ -142,12 +155,17 @@
                 border-bottom: 1px solid #ddd;
                 justify-content: space-around;
                 padding: 10px 0;
-                order: 1;
+                position: static;
+                height: auto;
             }
 
             .nav-button {
                 width: auto;
                 margin-bottom: 0;
+            }
+
+            .container {
+                margin-left: 0;
             }
         }
     </style>
@@ -155,20 +173,20 @@
 
 <body>
     <div class="sidebar">
-        <button class="nav-button" onclick="location.href='home'">
-            <img src="Vector.png" alt="Home" class="nav-icon" id="home" />
+        <button class="nav-button" onclick="location.href='{{ url('home') }}'">
+            <img src="{{ asset('Vector.png') }}" alt="Home" class="nav-icon" />
             <div>Home</div>
         </button>
-        <button class="nav-button" onclick="location.href='kelembabansuhu'">
-            <img src="temperature.png" alt="Suhu" class="nav-icon" />
+        <button class="nav-button" onclick="location.href='{{ url('kelembabansuhu') }}'">
+            <img src="{{ asset('temperature.png') }}" alt="Suhu" class="nav-icon" />
             <div>Suhu</div>
         </button>
-        <button class="nav-button">
-            <img src="rotation.png" alt="Rotasi Rak" class="nav-icon" />
+        <button class="nav-button active">
+            <img src="{{ asset('rotation.png') }}" alt="Rotasi Rak" class="nav-icon" />
             <div>Rotasi</div>
         </button>
-        <button class="nav-button" onclick="location.href='sensor'">
-            <img src="symbolsmonitor.png" alt="Sensor" class="nav-icon" />
+        <button class="nav-button" onclick="location.href='{{ url('sensor') }}'">
+            <img src="{{ asset('symbolsmonitor.png') }}" alt="Sensor" class="nav-icon" />
             <div>Sensor</div>
         </button>
     </div>
@@ -184,29 +202,23 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>10/04/2025</td>
-                    <td>08:00</td>
-                    <td>3</td>
-                </tr>
-                <tr>
-                    <td>18/04/2025</td>
-                    <td>08:00</td>
-                    <td>4</td>
-                </tr>
-                <tr>
-                    <td>19/04/2025</td>
-                    <td>08:00</td>
-                    <td>2</td>
-                </tr>
-                <tr>
-                    <td>30/04/2025</td>
-                    <td>08:00</td>
-                    <td>5</td>
-                </tr>
+                @if(isset($rotasiTelur) && count($rotasiTelur) > 0)
+                    @foreach ($rotasiTelur as $rotasi)
+                        <tr>
+                            <td>{{ \Carbon\Carbon::parse($rotasi->created_at)->format('d/m/Y') }}</td>
+                            <td>{{ $rotasi->jam_rotasi }}</td>
+                            <td>{{ $rotasi->jumlah_rotasi }}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="3">Data rotasi belum tersedia.</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
-        <button class="button" onclick="window.location.href='ubahrotasi'">Ubah Rotasi</button>
+
+        <button class="button" onclick="window.location.href='{{ url('ubahrotasi') }}'">Ubah Rotasi</button>
     </div>
 </body>
 

@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Netes.io Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home Netes.io</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       padding: 0;
@@ -50,8 +46,9 @@
       text-align: center;
     }
 
-    .nav-button:hover {
-      background-color: rgba(66, 170, 127, 0.2);
+    .nav-button:hover,
+    .nav-button.active {
+      background-color: rgba(59, 165, 125, 0.2);
     }
 
     .nav-icon {
@@ -72,7 +69,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px;
+      padding: 16px 24px;
       flex-wrap: wrap;
     }
 
@@ -118,12 +115,14 @@
       object-fit: cover;
     }
 
-
     .main-content {
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px;
+      padding: 20px 40px;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .egg-machine {
@@ -146,20 +145,17 @@
 
     .info-cards {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      gap: 20px;
       margin-bottom: 20px;
       width: 100%;
-      max-width: 400px;
     }
 
     .info-card {
-      flex: 1 1 45%;
+      flex: 1;
       padding: 10px;
       background-color: #e3f2f1;
       border-radius: 12px;
       text-align: center;
-      min-width: 140px;
     }
 
     .info-card h3 {
@@ -177,8 +173,8 @@
 
     .buttons {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 16px;
+      margin: 20px 0;
       flex-wrap: wrap;
       justify-content: center;
     }
@@ -187,9 +183,10 @@
       background: linear-gradient(to right, #3ba57d, #4aa3d1);
       color: white;
       border: none;
-      padding: 12px 25px;
-      border-radius: 10px;
-      font-size: 16px;
+      padding: 14px 30px;
+      border-radius: 12px;
+      font-size: 15px;
+      min-width: 200px;
       cursor: pointer;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       transition: background 0.3s ease, box-shadow 0.3s ease;
@@ -201,26 +198,23 @@
     }
 
     .chart-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
       width: 100%;
-      max-width: 400px;
     }
 
     .chart {
+      flex: 1;
       background-color: #e0f5ee;
       padding: 10px;
       border-radius: 12px;
-      margin-bottom: 20px;
     }
 
     .chart h4 {
       margin: 0 0 10px;
       font-size: 14px;
       color: #333;
-    }
-
-    .chart img {
-      width: 100%;
-      height: auto;
     }
 
     @media (max-width: 768px) {
@@ -245,17 +239,30 @@
         height: auto;
       }
 
+      .main-content {
+        padding: 20px;
+      }
+
       .nav-button {
         width: auto;
         margin-bottom: 0;
       }
+
+      .chart-container {
+        flex-direction: column;
+      }
+
+      .buttons button {
+        min-width: 100%;
+        padding: 12px;
+      }
     }
   </style>
 </head>
-
 <body>
+
   <div class="sidebar">
-    <button class="nav-button">
+    <button class="nav-button active">
       <img src="Vector.png" alt="Home" class="nav-icon" id="home" />
       <div>Home</div>
     </button>
@@ -276,7 +283,7 @@
   <div class="container">
     <div class="header">
       <div>
-        <div class="greeting">Good morning,</div>
+        <div class="greeting" id="greetingText"></div>
         <div class="name">Fahriz Septian</div>
       </div>
       <div class="header-buttons">
@@ -291,7 +298,6 @@
 
     <div class="main-content">
       <img src="egg.png" alt="Egg Incubator" class="egg-machine" />
-
       <div class="status">Status Rotasi Rak: <span>Aktif</span></div>
 
       <div class="info-cards">
@@ -306,7 +312,7 @@
       </div>
 
       <div class="buttons">
-        <button onclick="window.location.href='durasingkubasi'">Durasi Ingkubasi</button>
+        <button onclick="window.location.href='durasingkubasi'">Durasi Inkubasi</button>
         <button onclick="window.location.href='pilihkelamin'">Pilih Jenis Kelamin</button>
       </div>
 
@@ -324,6 +330,23 @@
   </div>
 
   <script>
+    function updateGreeting() {
+      const hour = new Date().getHours();
+      const greeting = document.getElementById("greetingText");
+      if (hour >= 5 && hour < 12) {
+        greeting.textContent = "Selamat pagi!";
+      } else if (hour >= 12 && hour < 17) {
+        greeting.textContent = "Selamat siang!";
+      } else if (hour >= 17 && hour < 21) {
+        greeting.textContent = "Selamat sore!";
+      } else {
+        greeting.textContent = "Selamat malam!";
+      }
+    }
+
+    updateGreeting();
+    setInterval(updateGreeting, 60000);
+
     const waktu = ["08:00", "09:00", "10:00", "11:00", "12:00"];
     const suhuData = [36.8, 37.1, 37.5, 37.3, 37.4];
     const kelembabanData = [58, 60, 61, 59, 60];
@@ -373,5 +396,4 @@
     });
   </script>
 </body>
-
 </html>

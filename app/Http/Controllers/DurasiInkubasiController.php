@@ -14,8 +14,7 @@ class DurasiInkubasiController extends Controller
      */
     public function index()
     {
-        $durasi = \App\Models\DurasiInkubasi::first();
-
+        $durasi = DurasiInkubasi::first();
         return view('durasingkubasi', compact('durasi'));
     }
 

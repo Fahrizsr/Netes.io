@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelembaban;
+use App\Models\Suhu;
 use App\Http\Requests\StoreKelembabanRequest;
 use App\Http\Requests\UpdateKelembabanRequest;
 
@@ -35,6 +36,7 @@ class KelembabanController extends Controller
             'waktu_perekaman' => 'required|date',
             'id_riwayat' => 'required|exists:riwayat_inkubasi,id_riwayat',
         ]);
+
 
         Kelembaban::create($request->all());
 

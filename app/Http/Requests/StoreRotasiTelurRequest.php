@@ -11,7 +11,7 @@ class StoreRotasiTelurRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,9 @@ class StoreRotasiTelurRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'jumlah_rotasi' => 'required|integer',
+            'jam_rotasi'    => 'required|date_format:H:i:s',
+            'id_riwayat'    => 'required|exists:riwayat_inkubasi,id_riwayat'
         ];
     }
 }
